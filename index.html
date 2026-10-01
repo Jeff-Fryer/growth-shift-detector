@@ -29,9 +29,9 @@
    ============================================================ */
 
 :root {
-  --ink:        #001426;
+  --ink:        #002244;
   --navy:       #002244;
-  --band:       #001d37;
+  --band:       #002244;
 
   --paper:      #f6f4ef;
   --paper-2:    #fffefb;
@@ -68,7 +68,7 @@ html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 body {
   margin: 0;
   font-family: var(--sans);
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.6;
   color: var(--text);
   background: var(--ink);
@@ -85,15 +85,29 @@ a:hover { border-bottom-color: var(--azure); }
 :focus-visible { outline: 2px solid var(--azure); outline-offset: 3px; border-radius: 4px; }
 
 .shell { width: 100%; max-width: var(--shell); margin: 0 auto; padding: 0 var(--gut); }
+/* When embedded in jefffryer.com on desktop, sit on the site's left content
+   edge (same as the header and footer). Content width is unchanged: the left
+   gutter moves into max-width. Standalone and small screens keep the centered shell. */
+/* Methodology: all seven boxes on one row when the frame is wide enough. */
+@media (min-width: 1200px) {
+  html.embedded .method .shell, html.embedded .builder .shell, html.embedded .result-wrap .shell { max-width: none; padding-right: 0; }
+  html.embedded .boxes { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; }
+  html.embedded .boxes li { padding: 20px 14px 22px; }
+  html.embedded .boxes h3 { font-size: 15.5px; }
+  html.embedded .boxes p { font-size: 14.5px; }
+}
+@media (min-width: 900px) {
+  html.embedded .shell { margin-left: 0; padding-left: 0; max-width: calc(var(--shell) - var(--gut)); }
+}
 
 .kicker {
-  font-family: var(--mono); font-size: 11px; font-weight: 400;
+  font-family: var(--mono); font-size: 12.5px; font-weight: 400;
   letter-spacing: .16em; text-transform: uppercase; color: var(--text-3);
 }
 
 .link-btn {
   appearance: none; background: none; border: 0; padding: 0;
-  font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+  font-family: var(--mono); font-size: 12.5px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--on-paper-3);
   cursor: pointer; border-bottom: 1px solid var(--paper-line);
 }
@@ -105,16 +119,8 @@ a:hover { border-bottom-color: var(--azure); }
 .hero {
   position: relative;
   text-align: left;
-  padding: 30px 0 clamp(64px, 7vw, 96px);
+  padding: clamp(40px, 5vw, 72px) 0 clamp(64px, 7vw, 96px);
   overflow: hidden;
-}
-.hero::before {
-  content: '';
-  position: absolute; inset: -12% -20% 22%;
-  pointer-events: none;
-  background:
-    radial-gradient(48% 56% at 50% 0%, rgba(59, 142, 240, .17), transparent 70%),
-    radial-gradient(40% 50% at 80% 16%, rgba(232, 176, 78, .09), transparent 72%);
 }
 .hero > .shell { position: relative; }
 
@@ -123,11 +129,34 @@ a:hover { border-bottom-color: var(--azure); }
   gap: 10px; flex-wrap: wrap;
   margin-bottom: clamp(56px, 8vw, 104px);
 }
-.ident-name { font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+.ident-name { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
 .ident-by {
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--text-3);
 }
+
+.how-btn {
+  appearance: none; background: none; border: 0; padding: 0; margin-left: 4px;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--text-3);
+  cursor: pointer; border-bottom: 1px solid currentColor;
+  line-height: 1.5;
+}
+.how-btn:hover { color: var(--text-2); }
+.how-panel { flex: 0 0 100%; margin-top: 14px; }
+.how-panel[hidden] { display: none; }
+.how-panel p { font-size: 15.5px; line-height: 1.6; color: var(--text-2); max-width: 58ch; }
+.how-panel p + p { margin-top: 12px; }
+.meth .meth-h { margin-top: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); }
+.meth .meth-h:first-child { margin-top: 0; }
+.meth .meth-flow { color: var(--text); font-weight: 600; }
+.meth-stages { margin-top: 12px; max-width: 58ch; }
+.meth-stages dt { margin-top: 10px; font-size: 15.5px; font-weight: 600; color: var(--text); }
+.meth-stages dd { margin: 2px 0 0; font-size: 15.5px; line-height: 1.6; color: var(--text-2); }
+.meth-rules { margin: 10px 0 0; padding-left: 20px; max-width: 58ch; list-style: disc; }
+.meth-rules li::marker { color: var(--text-3); }
+.meth-rules li { font-size: 15.5px; line-height: 1.6; color: var(--text-2); margin-top: 4px; }
+.meth > p:last-child { margin-top: 18px; }
 
 .hero h1 {
   font-size: clamp(2.5rem, 6.6vw, 5.6rem);
@@ -145,7 +174,7 @@ a:hover { border-bottom-color: var(--azure); }
   line-height: 1.55;
   color: var(--text-2);
 }
-.fine { margin-top: 16px; font-size: 13.5px; color: var(--text-3); }
+.fine { margin-top: 16px; font-size: 14.5px; color: var(--text-3); }
 .fine.dim { margin-top: 6px; color: var(--text-3); }
 
 /* ------------------------------------------------------------
@@ -153,7 +182,7 @@ a:hover { border-bottom-color: var(--azure); }
    ------------------------------------------------------------ */
 .go {
   appearance: none; display: inline-block;
-  font-family: var(--sans); font-size: 16px; font-weight: 600;
+  font-family: var(--sans); font-size: 17px; font-weight: 600;
   letter-spacing: -.005em; line-height: 1;
   color: var(--gold-ink);
   background: var(--gold);
@@ -167,11 +196,11 @@ a.go { border-bottom: 0; }
 .go:hover { filter: brightness(1.06); box-shadow: 0 18px 40px -14px rgba(232, 176, 78, .7); }
 .go:active { transform: translateY(1px); }
 .go:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; filter: none; }
-.go.wide { display: block; width: 100%; margin-top: 30px; padding: 20px; font-size: 17px; }
+.go.wide { display: block; width: 100%; margin-top: 30px; padding: 20px; font-size: 18px; }
 
 .ghost {
   appearance: none;
-  font-family: var(--sans); font-size: 15px; font-weight: 500; line-height: 1;
+  font-family: var(--sans); font-size: 16px; font-weight: 500; line-height: 1;
   color: var(--on-paper);
   background: var(--paper-2);
   border: 1px solid var(--paper-line);
@@ -202,7 +231,7 @@ a.go { border-bottom: 0; }
 
 label, legend {
   display: block; padding: 0;
-  font-family: var(--mono); font-size: 10.5px;
+  font-family: var(--mono); font-size: 12px;
   letter-spacing: .15em; text-transform: uppercase;
   color: var(--on-paper-2);
   margin-bottom: 10px;
@@ -211,7 +240,7 @@ label, legend {
 input[type=text], input[type=number], textarea#hunch {
   width: 100%;
   font-family: var(--sans);
-  font-size: 16px;
+  font-size: 17px;
   color: var(--on-paper);
   background: var(--paper-2);
   border: 1px solid var(--paper-line);
@@ -230,9 +259,9 @@ input[type=text]:focus, input[type=number]:focus, textarea#hunch:focus {
 input[aria-invalid="true"] { border-color: var(--red); }
 textarea#hunch { resize: vertical; line-height: 1.55; }
 
-.err { font-size: 13px; color: var(--red); margin-top: 7px; }
+.err { font-size: 14px; color: var(--red); margin-top: 7px; }
 .err:empty { display: none; }
-.unit { display: inline-block; margin-top: 9px; font-size: 13px; color: var(--on-paper-2); }
+.unit { display: inline-block; margin-top: 9px; font-size: 14px; color: var(--on-paper-2); }
 
 /* search window */
 .seg { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -240,7 +269,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .seg span {
   display: block;
-  font-family: var(--sans); font-size: 15px; letter-spacing: 0; text-transform: none;
+  font-family: var(--sans); font-size: 16px; letter-spacing: 0; text-transform: none;
   color: var(--on-paper-2);
   background: var(--paper-2);
   padding: 12px 22px;
@@ -269,11 +298,11 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 }
 .fold summary::-webkit-details-marker { display: none; }
 .fold-t {
-  font-family: var(--mono); font-size: 11px; letter-spacing: .15em;
+  font-family: var(--mono); font-size: 12.5px; letter-spacing: .15em;
   text-transform: uppercase; color: var(--on-paper);
 }
 .fold-note {
-  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  font-family: var(--mono); font-size: 12.5px; letter-spacing: .1em;
   text-transform: uppercase; color: var(--on-paper-3);
   display: inline-flex; align-items: center; gap: 12px;
 }
@@ -293,7 +322,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 .opt {
   display: flex; align-items: center; gap: 11px; margin: 0; padding: 9px 0;
   cursor: pointer;
-  font-family: var(--sans); font-size: 15px; letter-spacing: 0;
+  font-family: var(--sans); font-size: 16px; letter-spacing: 0;
   text-transform: none; color: var(--on-paper);
 }
 .opt:hover { color: var(--navy); }
@@ -303,7 +332,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 .hunch { margin-top: 22px; }
 .mech {
   margin-top: 16px; text-align: center;
-  font-size: 13.5px; line-height: 1.5; color: var(--on-paper-2);
+  font-size: 14.5px; line-height: 1.5; color: var(--on-paper-2);
 }
 
 /* ------------------------------------------------------------
@@ -327,7 +356,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   border-bottom: 1px solid var(--paper-line-2);
 }
 .brief-kind {
-  font-family: var(--mono); font-size: 10.5px;
+  font-family: var(--mono); font-size: 12px;
   letter-spacing: .16em; text-transform: uppercase; color: var(--on-paper-3);
 }
 .brief-co {
@@ -338,13 +367,13 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 .brief-meta {
   display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
   margin-top: 11px;
-  font-family: var(--mono); font-size: 11.5px; color: var(--on-paper-2);
+  font-family: var(--mono); font-size: 12.5px; color: var(--on-paper-2);
 }
 .brief-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
 .banner {
   margin-top: 18px;
-  font-size: 13.5px; color: #8a6d1f;
+  font-size: 14.5px; color: #8a6d1f;
   background: #fbf2dd; border: 1px solid #f0dfb4;
   border-radius: 8px; padding: 11px 14px;
 }
@@ -358,7 +387,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 .tab {
   appearance: none; background: none; border: 0;
   padding: 0 0 13px;
-  font-family: var(--sans); font-size: 15px; font-weight: 500;
+  font-family: var(--sans); font-size: 16px; font-weight: 500;
   color: var(--on-paper-2);
   cursor: pointer;
   border-bottom: 2px solid transparent;
@@ -369,18 +398,13 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 .tab[aria-selected="true"] { color: var(--navy); font-weight: 600; border-bottom-color: var(--gold); }
 
 .job {
-  margin: 20px 0 6px;
-  font-size: 16px; line-height: 1.55; color: var(--on-paper-2);
-  max-width: 74ch;
-}
-.needs {
-  margin: 0 0 16px;
-  font-size: 14.5px; line-height: 1.5; color: var(--on-paper-2);
+  margin: 20px 0 16px;
+  font-size: 17px; line-height: 1.55; color: var(--on-paper-2);
   max-width: 74ch;
 }
 .tabs-guide {
   margin-top: 22px;
-  font-size: 15px; line-height: 1.55; color: var(--on-paper-2);
+  font-size: 16px; line-height: 1.55; color: var(--on-paper-2);
   max-width: 74ch;
 }
 .tabs-guide strong { font-weight: 600; color: var(--on-paper); }
@@ -390,7 +414,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   display: block; width: 100%;
   height: clamp(340px, 46vh, 520px);
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.85;
   color: #24313d;
   background: var(--paper-2);
@@ -406,16 +430,16 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; margin-top: 16px;
 }
-.status { font-size: 13.5px; color: var(--on-paper-2); }
+.status { font-size: 14.5px; color: var(--on-paper-2); }
 
 /* ------------------------------------------------------------
    EXAMPLE
    ------------------------------------------------------------ */
-.example { padding-bottom: clamp(46px, 5vw, 70px); }
+.example { border-top: 1px solid var(--line-soft); padding: clamp(34px, 3.6vw, 50px) 0 clamp(40px, 4.2vw, 60px); }
 .example-rows { margin-top: 28px; display: grid; gap: 26px; }
 .example-row { display: grid; grid-template-columns: 176px minmax(0, 1fr); gap: 0 34px; align-items: baseline; }
 .ex-k {
-  font-family: var(--mono); font-size: 10.5px;
+  font-family: var(--mono); font-size: 12px;
   letter-spacing: .16em; text-transform: uppercase;
   color: var(--gold); padding-top: .55em;
 }
@@ -424,19 +448,25 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   line-height: 1.36; letter-spacing: -.022em;
   max-width: 34ch;
 }
+/* Example: the two rows sit side by side, label above text. */
+@media (min-width: 700px) {
+  .example-rows { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 56px; align-items: start; }
+  .example-row { grid-template-columns: 1fr; gap: 9px; align-items: start; }
+  .ex-k { padding-top: 0; }
+}
 
 /* How a scan takes shape. An illustration of the research method, not of
    this page. Markup is the finished state; script only plays the lead-up
    when motion is allowed. Never connected to the builder. */
 .ex-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 20px; flex-wrap: wrap; }
 .ex-tag {
-  font-family: var(--mono); font-size: 10px; letter-spacing: .16em;
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: .16em;
   text-transform: uppercase; color: var(--text-3);
   border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px 3px;
 }
 .ex-co {
   margin-top: 26px;
-  font-family: var(--mono); font-size: 11px; letter-spacing: .16em;
+  font-family: var(--mono); font-size: 12.5px; letter-spacing: .16em;
   text-transform: uppercase; color: var(--text);
 }
 .ex-steps, .ex-srcs { margin: 0; padding: 0; list-style: none; }
@@ -447,7 +477,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   counter-reset: exstep;
 }
 .ex-steps li {
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--text-3);
   transition: color .5s;
 }
@@ -464,7 +494,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 
 .ex-areas { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .ex-areas li {
-  font-size: 14.5px; line-height: 1.4; color: var(--text-2);
+  font-size: 15.5px; line-height: 1.4; color: var(--text-2);
   border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px;
 }
 
@@ -477,9 +507,9 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 .ex-srcs { display: flex; margin-top: 18px; }
 .ex-srcs li {
   flex: 0 0 auto; overflow: hidden; white-space: nowrap;
-  width: 46px; margin-right: 8px; height: 34px;
+  width: 48px; margin-right: 8px; height: 36px;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono); font-size: 11px; color: var(--text-2);
+  font-family: var(--mono); font-size: 12px; color: var(--text-2);
   border: 1px solid var(--line); border-radius: 6px;
   transition: width .7s, margin .7s, border-color .5s, color .5s, opacity .5s;
 }
@@ -487,7 +517,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 .ex-srcs.traced li.dup { opacity: .35; }
 .ex-srcs.merged li.dup { width: 0; margin-right: 0; border-width: 0; opacity: 0; }
 .ex-notes { margin-top: 18px; display: grid; gap: 6px; }
-.ex-notes p { font-size: 15px; line-height: 1.5; color: var(--text-2); transition: opacity .5s; }
+.ex-notes p { font-size: 16px; line-height: 1.5; color: var(--text-2); transition: opacity .5s; }
 .ex-notes .ex-against { margin-top: 8px; color: var(--text); }
 .ex-pane .ex-notes p.wait { opacity: 0; }
 
@@ -506,7 +536,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   background: var(--band);
   border-top: 1px solid var(--line-soft);
   border-bottom: 1px solid var(--line-soft);
-  padding: clamp(52px, 5.6vw, 80px) 0;
+  padding: clamp(34px, 3.6vw, 50px) 0;
 }
 .method h2 { font-size: clamp(1.5rem, 2.4vw, 2rem); max-width: 34ch; }
 
@@ -529,14 +559,22 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   background: var(--azure);
   margin-bottom: 16px;
 }
-.boxes h3 { font-size: 17px; letter-spacing: -.015em; }
-.boxes p { margin-top: 10px; font-size: 15px; line-height: 1.5; color: var(--text-2); }
+/* Accent line above each heading: one color per box, in order (the seventh repeats the first). */
+.boxes li:nth-child(1)::before { background: #4DA3FF; }
+.boxes li:nth-child(2)::before { background: #45C4B0; }
+.boxes li:nth-child(3)::before { background: #E8BA62; }
+.boxes li:nth-child(4)::before { background: #B09AE8; }
+.boxes li:nth-child(5)::before { background: #ED9685; }
+.boxes li:nth-child(6)::before { background: #83CDE3; }
+.boxes li:nth-child(7)::before { background: #4DA3FF; }
+.boxes h3 { font-size: 18px; letter-spacing: -.015em; }
+.boxes p { margin-top: 10px; font-size: 16px; line-height: 1.5; color: var(--text-2); }
 
 /* ------------------------------------------------------------
    WHY FREE
    Type only. Reuses .shell and .kicker; no cards, icons or new surfaces.
    ------------------------------------------------------------ */
-.why { padding: clamp(52px, 5.6vw, 80px) 0 0; }
+.why { padding: clamp(34px, 3.6vw, 50px) 0 0; }
 .why h2 { margin-top: 18px; font-size: clamp(1.5rem, 2.4vw, 2rem); max-width: 36ch; text-wrap: balance; }
 .why-body { margin-top: clamp(22px, 2.6vw, 30px); max-width: 58ch; }
 .why-body p { font-size: clamp(1.02rem, 1.3vw, 1.19rem); line-height: 1.55; color: var(--text-2); }
@@ -551,7 +589,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   display: flex; align-items: flex-end; justify-content: space-between;
   gap: 28px 48px; flex-wrap: wrap;
 }
-.foot-l { font-size: 14.5px; line-height: 1.7; color: var(--text-2); }
+.foot-l { font-size: 15.5px; line-height: 1.7; color: var(--text-2); }
 
 /* ------------------------------------------------------------
    RESPONSIVE
@@ -587,20 +625,20 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   }
   .stage { display: block; }
   .tab { width: 100%; text-align: left; padding: 12px 0; }
-  .tab { font-size: 14px; }
-  #raw { font-size: 12.5px; padding: 16px; height: 340px; }
+  .tab { font-size: 15px; }
+  #raw { font-size: 13.5px; padding: 16px; height: 340px; }
 
   .example-row { grid-template-columns: 1fr; gap: 9px; }
   .ex-k { padding-top: 0; }
   .ex-v { max-width: none; }
   .ex-co { margin-top: 22px; }
   .ex-steps { gap: 0 14px; }
-  .ex-steps li { font-size: 9.5px; letter-spacing: .12em; line-height: 1.5; }
+  .ex-steps li { font-size: 10.5px; letter-spacing: .12em; line-height: 1.5; }
   .ex-stage { margin-top: 22px; }
   .ex-areas { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .ex-areas li { font-size: 13.5px; padding: 9px 11px; }
-  .ex-srcs li { width: 22px; margin-right: 5px; height: 30px; font-size: 10px; border-radius: 5px; }
-  .ex-notes p { font-size: 14.5px; }
+  .ex-areas li { font-size: 14.5px; padding: 9px 11px; }
+  .ex-srcs li { width: 22px; margin-right: 5px; height: 30px; font-size: 11px; border-radius: 5px; }
+  .ex-notes p { font-size: 15.5px; }
 
   .boxes { grid-template-columns: 1fr; gap: 12px; }
   .boxes li { padding: 20px; }
@@ -614,11 +652,44 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 }
 
 </style>
+<script>try{if(window.self!==window.top)document.documentElement.classList.add('embedded')}catch(e){document.documentElement.classList.add('embedded')}</script>
 </head>
 <body>
 <section class="hero">
   <div class="shell">
-    <p class="ident"><span class="ident-name">Growth Shift Detector</span><span class="ident-by">by Jeff Fryer</span></p>
+    <div class="ident">
+      <span class="ident-name">Growth Shift Detector</span><span class="ident-by">by Jeff Fryer</span>
+      <button type="button" class="how-btn" id="how-btn" aria-expanded="false" aria-controls="how-panel">How it works</button>
+      <button type="button" class="how-btn" id="meth-btn" aria-expanded="false" aria-controls="meth-panel">Methodology</button>
+      <div class="how-panel" id="how-panel" hidden>
+        <p>Growth Shift Detector is built around a research method, not just a prompt. It looks for changes in public evidence, checks whether apparently different sources trace back to the same event, looks for evidence against its own findings, and stays conservative when the evidence isn&rsquo;t strong enough.</p>
+        <p>The research prompt is simply a portable way to run that method in ChatGPT, Claude, Gemini, or another AI with web research.</p>
+        <p>AI can help us look wider and notice things sooner. It isn&rsquo;t a replacement for judgment and senior leadership.</p>
+      </div>
+      <div class="how-panel meth" id="meth-panel" hidden>
+        <p class="meth-h">The research method</p>
+        <p>Growth Shift Detector uses five stages to separate meaningful commercial change from ordinary market noise:</p>
+        <p class="meth-flow">Observe &rarr; Corroborate &rarr; Connect &rarr; Challenge &rarr; Surface</p>
+        <dl class="meth-stages">
+          <dt>Observe</dt><dd>Establish what was true before looking for evidence that something changed.</dd>
+          <dt>Corroborate</dt><dd>Trace coverage back to the underlying event and look for independent evidence. Ten articles based on one press release count once.</dd>
+          <dt>Connect</dt><dd>Look for separate signals that point in the same direction while considering other explanations for what we&rsquo;re seeing.</dd>
+          <dt>Challenge</dt><dd>Search for evidence against the emerging finding, not just evidence that supports it.</dd>
+          <dt>Surface</dt><dd>Report only what survives that process and use the lowest verdict the evidence supports. If nothing meaningful survives, say so.</dd>
+        </dl>
+        <p class="meth-h">A few of the evidence rules</p>
+        <ul class="meth-rules">
+          <li>Independent evidence matters more than repeated coverage.</li>
+          <li>Public evidence of orders and deployment matters more than announcements.</li>
+          <li>Repeat commercial activity matters more than first activity when it is publicly evidenced.</li>
+          <li>Hiring can indicate intent, but it does not prove adoption.</li>
+          <li>Funding creates capacity to move, but it does not prove demand.</li>
+          <li>A partnership without evidence of deployment is not proof of commercialization.</li>
+          <li>Evidence against a finding matters, too.</li>
+        </ul>
+        <p>The generated research prompt applies this methodology in ChatGPT, Claude, Gemini, or another AI with web research.</p>
+      </div>
+    </div>
     <h1 id="h1">Generate a rigorous growth scan for your company.</h1>
     <p class="lede">Give it your company and website. It builds a research prompt for ChatGPT, Claude, or Gemini to look outside your company for changes that could be affecting growth.</p>
     <p class="fine">Free. No email, card, monthly plan, or trial.</p>
@@ -627,7 +698,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 </section>
 
 <main>
-  <section class="builder" id="scan" aria-label="Build your research brief">
+  <section class="builder" id="scan" aria-label="Build your research prompt">
     <div class="shell">
       <div class="panel">
         <form id="form" novalidate autocomplete="off">
@@ -646,7 +717,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 
           <div id="settings">
             <fieldset class="field">
-              <legend>Search window</legend>
+              <legend>Look back over</legend>
               <div class="seg">
                 <label><input type="radio" name="win" value="6"><span>6 months</span></label>
                 <label><input type="radio" name="win" value="12" checked><span>12 months</span></label>
@@ -662,10 +733,10 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
             </fieldset>
 
             <details class="fold" id="sigbox">
-              <summary><span class="fold-t">Focus the search</span><span class="fold-note" id="sig-sum">All seven</span></summary>
+              <summary><span class="fold-t">What should the scan look at?</span><span class="fold-note" id="sig-sum">All seven areas</span></summary>
               <div class="fold-in">
                 <div id="sig-list" class="opts"></div>
-                <button type="button" class="link-btn" id="scope-all" hidden>Select all seven</button>
+                <button type="button" class="link-btn" id="scope-all" hidden>Select everything below</button>
               </div>
             </details>
 
@@ -683,11 +754,11 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
           <div class="field hunch" id="hunch-field" hidden>
             <label for="hunch">Hunch to test</label>
             <textarea id="hunch" rows="3" placeholder="Our customers seem to be moving from pilots to production."></textarea>
-            <span class="unit">The brief will try to break it, not prove it.</span>
+            <span class="unit">The prompt will try to break it, not prove it. Or leave this blank and paste a finding into the prompt where marked.</span>
           </div>
 
           <button type="button" class="go wide" id="build">Build the research prompt</button>
-          <p class="mech">Build the brief, then run it in ChatGPT, Claude, Gemini, or another AI with web research.</p>
+          <p class="mech">Build the research prompt, then run it in ChatGPT, Claude, Gemini, or another AI with web research.</p>
         </form>
       </div>
     </div>
@@ -695,10 +766,10 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 
   <section class="result-wrap">
     <div class="shell">
-      <article class="result" id="out" hidden aria-label="Your research brief">
+      <article class="result" id="out" hidden aria-label="Your research prompt">
         <header class="brief-head">
           <div class="brief-id">
-            <p class="brief-kind">Growth Shift Detector research brief</p>
+            <p class="brief-kind">Growth Shift Detector research prompt</p>
             <h2 class="brief-co" id="brief-co">Your company</h2>
             <p class="brief-meta">
               <span id="brief-win">12 months</span>
@@ -706,7 +777,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
             </p>
           </div>
           <div class="brief-actions">
-            <button type="button" class="go" id="copy" disabled>Copy brief</button>
+            <button type="button" class="go" id="copy" disabled>Copy research prompt</button>
             <button type="button" class="ghost" id="download" disabled>Download Markdown</button>
           </div>
         </header>
@@ -714,11 +785,10 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
         <p id="banner" class="banner" hidden></p>
 
         <p class="tabs-guide"><strong>Start with Scan.</strong> Use the other tools to test what you find, share it with your team, or track what happens next.</p>
-        <div class="stages" id="stages" role="tablist" aria-label="Brief type"></div>
+        <div class="stages" id="stages" role="tablist" aria-label="Prompt type"></div>
         <p class="job" id="out-job"></p>
-        <p class="needs" id="out-needs"></p>
 
-        <textarea id="raw" readonly spellcheck="false" aria-label="Brief as Markdown"></textarea>
+        <textarea id="raw" readonly spellcheck="false" aria-label="Research prompt as Markdown"></textarea>
 
         <div class="brief-foot">
           <span class="status" id="status" role="status" aria-live="polite"></span>
@@ -787,15 +857,15 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 
   <section class="method" aria-labelledby="mh">
     <div class="shell">
-      <h2 id="mh">Methodology built into the prompt</h2>
+      <h2 id="mh">What the scan looks for</h2>
       <ul class="boxes">
-        <li><h3>What Customers Do</h3><p>Are customers reordering, or just trying it?</p></li>
-        <li><h3>Competitor Moves</h3><p>Where are competitors putting their money?</p></li>
-        <li><h3>Commercialization</h3><p>Is the tech turning into repeat orders?</p></li>
-        <li><h3>Market Direction</h3><p>Where is demand showing up?</p></li>
-        <li><h3>Who's Building Around You</h3><p>Are suppliers and partners moving in?</p></li>
-        <li><h3>Hiring and Buildout</h3><p>Who is staffing up and adding capacity?</p></li>
-        <li><h3>Your Story vs the Market</h3><p>Does your story still match where the money is going?</p></li>
+        <li><h3>How customers buy</h3><p>Are customers reordering, or just trying it?</p></li>
+        <li><h3>What competitors are doing</h3><p>Where are competitors putting their money?</p></li>
+        <li><h3>How technology becomes revenue</h3><p>Is adoption moving from pilots to commercial deployment?</p></li>
+        <li><h3>Where the market is heading</h3><p>Where is demand showing up?</p></li>
+        <li><h3>Partnerships and industry alliances</h3><p>Are suppliers and partners moving in?</p></li>
+        <li><h3>Hiring and leadership changes</h3><p>Who is staffing up and adding capacity?</p></li>
+        <li><h3>How the company fits the market</h3><p>Does your story still match where the money is going?</p></li>
       </ul>
     </div>
   </section>
@@ -803,17 +873,17 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   <section class="why" aria-labelledby="whyk">
     <div class="shell">
       <p class="kicker" id="whyk">Why free?</p>
-      <h2>I want to be useful before you need to hire me.</h2>
+      <h2>The tool is free. My work with companies is how I make a living.</h2>
       <div class="why-body">
-        <p>Growth Shift Detector can help you spot an outside change that could be affecting growth. Helping companies figure out what it means and what to do about it is what I do.</p>
-        <p><strong>Run it. Keep what it finds.</strong></p>
+        <p>I help B2B tech companies understand why growth has stalled and what to do about it. Growth Shift Detector gives you a way to start exploring that question yourself.</p>
+        <p><strong>Run it. See what it turns up.</strong></p>
       </div>
     </div>
   </section>
 
   <footer class="foot">
     <div class="shell foot-in">
-      <p class="foot-l">Want to look inside the company, too?<br>
+      <p class="foot-l">Want to see how ready your company is to grow, too?<br>
         <a href="https://www.jefffryer.com/commercial-readiness-audit" target="_top">Run the Commercial Readiness Audit &rarr;</a></p>
     </div>
   </footer>
@@ -923,7 +993,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   /* 1. SIGNAL TYPES                                                     */
   /* ------------------------------------------------------------------ */
   var SIGNAL_TYPES = [
-    { id: 'customer', name: 'Customer behavior', short: 'What customers do, not what they say',
+    { id: 'customer', name: 'How customers buy', short: 'What customers do, not what they say',
       look: ['Orders, repeat orders, and multi-site or multi-line installs',
         'Design wins and qualifications, and whether they became production orders, repeat orders or a second-source award',
         'Pilots, production ramps and application changes',
@@ -932,7 +1002,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
       weak: 'Customer quotes inside vendor press releases, evaluations with no follow-on, conference talk.',
       where: 'Customer earnings calls and filings, tenders and procurement records, customer job postings, trade press quotes from buyers.',
       feeds: 'A shift needs several independent buyers acting, ideally repeating. One buyer is a program, not a market. Repeat orders outrank first orders. Volume shipments outrank pilots.' },
-    { id: 'competitive', name: 'Competitive movement', short: 'Where rivals place new commercial bets',
+    { id: 'competitive', name: 'What competitors are doing', short: 'Where rivals place new commercial bets',
       look: ['Products, named customers and applications rivals are moving into',
         'Capacity, new lines, new sites, acquisitions and investments',
         'Partnerships, hiring and changes in market positioning',
@@ -941,7 +1011,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
       weak: 'Launch announcements, roadmap statements, executive interviews.',
       where: 'Rival earnings calls and filings, customer confirmations, facility and permit records, job boards, trade press.',
       feeds: 'Separate isolated announcements from patterns of movement. Several rivals moving the same way, backed by capacity or customers, is a pattern. A competitor announcement is weaker than observable customer or production behavior.' },
-    { id: 'commercialization', name: 'Commercialization', short: 'From technical promise to repeatable demand',
+    { id: 'commercialization', name: 'How technology becomes revenue', short: 'From technical promise to repeatable demand',
       look: ['Progression from sampling and pilots to customer commitments, production infrastructure, repeat orders and scaled adoption',
         'Pilot lines becoming production capacity',
         'Cost, yield and lead time discussed as commercial terms',
@@ -950,7 +1020,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
       weak: 'Demonstrations, sampling, partnerships with no evidence of deployment.',
       where: 'Customer and supplier earnings calls, qualification announcements, standards records, and announcements from whichever ecosystem actors matter in this industry: the suppliers, platforms, channels, infrastructure providers, partners or standards bodies the company depends on. In semiconductors that includes foundry and packaging activity.',
       feeds: 'Place the opportunity on the path from sampling to repeat orders. A partnership without evidence of deployment is not commercialization. Absence of expected follow-on activity can be counter-evidence.' },
-    { id: 'market', name: 'Market direction', short: 'Where demand is forming',
+    { id: 'market', name: 'Where the market is heading', short: 'Where demand is forming',
       look: ['Changes in applications, requirements and buyer priorities',
         'Customer capital spending, not forecasts alone',
         'Investment, grants and incentives; fabs, plants and test capacity being built',
@@ -959,7 +1029,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
       weak: 'Analyst forecasts, market-size claims, funding announcements alone.',
       where: 'Government and agency records, capex disclosures, standards bodies, customer filings, industry association data.',
       feeds: 'Shows where demand may be forming. A funding event may enable a shift but does not prove it exists. Investment following the claimed trend supports it. Announcements alone do not.' },
-    { id: 'ecosystem', name: 'Ecosystem formation', short: 'Who is assembling around an opportunity',
+    { id: 'ecosystem', name: 'Partnerships and industry alliances', short: 'Who is assembling around an opportunity',
       look: ['Suppliers, foundries, OSATs, integrators and partners entering or expanding',
         'Manufacturing capacity, standards, infrastructure and funding around one application',
         'Consortia, roadmaps and shared reference designs',
@@ -968,7 +1038,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
       weak: 'MOUs, membership announcements, joint press releases with no scope or dates.',
       where: 'Supplier filings and earnings calls, consortium rosters, standards records, joint program announcements.',
       feeds: 'Independent parties assembling makes a market easier to serve. Capacity investment can corroborate demand but does not itself prove demand.' },
-    { id: 'organizational', name: 'Organizational signals', short: 'Hiring and capability, as support only',
+    { id: 'organizational', name: 'Hiring and leadership changes', short: 'Hiring and capability, as support only',
       look: ['Hiring by the company, rivals and customers: roles, locations, wording',
         'Leadership changes, especially commercial or segment-specific',
         'Capital allocation, facilities and capability expansion'],
@@ -976,7 +1046,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
       weak: 'General hiring, title changes, headcount claims.',
       where: 'Job boards and careers pages (dated), leadership announcements, facility and permit records.',
       feeds: 'Use as supporting evidence of where companies are preparing to compete. Hiring indicates intent, not market adoption. Never treat it as proof of demand.' },
-    { id: 'positioning', name: 'Positioning alignment', short: 'Whether how the company presents itself is lagging where opportunity is moving',
+    { id: 'positioning', name: 'How the company fits the market', short: 'Whether how the company presents itself is lagging where opportunity is moving',
       look: ['How the company describes its markets, applications and customers now versus at the start of the window',
         'What it emphasizes and who it appears to serve, judged on the newest releases and news as well as the homepage and market list. They can disagree',
         'How competitors, customers and independent sources describe the opportunity'],
@@ -990,10 +1060,10 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   /* 2. MODULES                                                          */
   /* ------------------------------------------------------------------ */
   var MODULES = [
-    { id: 'full', stage: 'investigate', name: 'Scan', job: 'Find outside changes that could be affecting your company\'s growth.', needs: 'Needs a company name and website.', filePrefix: 'growth-shift-detector' },
-    { id: 'stress', stage: 'investigate', name: 'Stress Test', job: 'Test a finding or hunch against the evidence.', needs: 'Needs a finding or hunch. Add it in the Hunch to test box above, or paste it into the brief where marked.', filePrefix: 'growth-shift-stress-test' },
-    { id: 'exec', stage: 'synthesize', name: 'Executive Brief', job: 'Summarize a completed investigation for your leadership team.', needs: 'Needs a completed investigation. Run the Scan first, then paste the finished report into the brief where marked.', filePrefix: 'growth-shift-exec-brief' },
-    { id: 'watch', stage: 'monitor', name: 'Watchlist', job: 'Identify what to watch next to see whether a finding holds up.', needs: 'Needs a finding or report. Paste it into the brief where marked.', filePrefix: 'growth-shift-watchlist' }
+    { id: 'full', stage: 'investigate', name: 'Scan', job: 'Find outside changes that could be affecting your company\'s growth.', filePrefix: 'growth-shift-detector' },
+    { id: 'stress', stage: 'investigate', name: 'Stress Test', job: 'Test a finding or hunch against the evidence.', filePrefix: 'growth-shift-stress-test' },
+    { id: 'exec', stage: 'synthesize', name: 'Executive Brief', job: 'Summarize a completed investigation for your leadership team.', filePrefix: 'growth-shift-exec-brief' },
+    { id: 'watch', stage: 'monitor', name: 'Watchlist', job: 'Identify what to watch next to see whether a finding holds up.', filePrefix: 'growth-shift-watchlist' }
   ];
 
   /* ------------------------------------------------------------------ */
@@ -1019,7 +1089,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     'Semiconductor \u00b7 Deep Tech \u00b7 Hard Tech | Claude Certified'
   ].join('\n');
 
-  var WHAT_NEXT_RULE = 'End the report with this section, exactly as written, after everything else. Reproduce it verbatim. Render jefffryer.com as a Markdown link if your output supports links.';
+  var WHAT_NEXT_RULE = 'End the report with the following section, reproduced verbatim. Format jefffryer.com as a Markdown link.';
 
   var GRADES = [
     '| Grade | What it is | Examples |',
@@ -1139,7 +1209,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     var L = ['# ' + title, ''];
     L.push('Company: ' + c.company);
     L.push('Website: ' + c.website);
-    L.push('Window: ' + fmtMonth(c.start) + ' to ' + fmtMonth(c.end) + ' (' + c.months + ' months)');
+    L.push('Window: ' + fmtMonth(c.start) + ' to ' + fmtMonth(c.end) + ' (' + c.months + (c.months === 1 ? ' month)' : ' months)'));
     L.push('Market: ' + (c.market || 'not supplied, work it out from the evidence, do not assume one'));
     if (c.customers.length) L.push('Customers: ' + c.customers.join('; '));
     if (c.competitors.length) L.push('Competitors: ' + c.competitors.join('; '));
@@ -1202,16 +1272,16 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push('**Look for behavior across:** customers, competitors, suppliers, the ecosystem, investment, capacity, hiring, and the company itself. **Look for orders, deployments and repeat behavior, not merely announcements.**');
     L.push('');
-    L.push('**Required operation: positioning alignment.** Do this in every Scan, even if you find no shift.');
+    L.push('**Required operation: how the company fits the market (positioning alignment).** Compare how the company presents itself with where the market and its buyers are actually moving. Do this in every Scan, even if you find no shift.');
     L.push('');
     L.push('1. Capture how the company presents itself today: the homepage headline and the markets and applications it names, in the order it names them.');
     L.push('2. Read its five most recent substantive company releases. Skip event notices and personnel news.');
     L.push('3. Compare what the company says it is and serves with what its newest activity suggests it is actually pursuing.');
-    L.push('4. If you could only retrieve some of the five releases, or not the homepage, say how many you read. Do not claim the comparison was complete. Report the result in the POSITIONING ALIGNMENT section as **Aligned**, **Possibly ahead of the website story** or **Insufficient evidence**, with the evidence behind it.');
+    L.push('4. If you could only retrieve some of the five releases, or not the homepage, say how many you read. Do not claim the comparison was complete. Report the result in a section headed "How the company fits the market" as **Aligned**, **Possibly ahead of the website story** or **Insufficient evidence**, with the evidence behind it.');
     L.push('');
     L.push('A difference is not an error. It may only mean recent activity is moving faster than the story on the website. Report the gap as something to investigate. Do not tell the company how to reposition.');
     L.push('');
-    L.push('**Search.** ' + (c.allSignals ? 'Cover all seven investigation dimensions below.' : 'Cover only these dimensions: ' + c.signals.map(function (x) { return x.name.toLowerCase(); }).join(', ') + '.'));
+    L.push('**Search.** ' + (c.allSignals ? 'Cover everything below: investigate all seven listed areas.' : 'Cover only these dimensions: ' + c.signals.map(function (x) { return x.name; }).join(', ') + '.'));
     L.push('');
     L.push('- **Run some searches without the company name.** Search customers, applications, standards and rivals, only to check whether a company-specific signal also shows up in the market.');
     L.push('- **Verify consequential facts.** An acquisition, ownership change, major customer or financing must not drive a finding unless a credible source supports it. If you cannot confirm it, mark it [UNVERIFIED] and do not build on it.');
@@ -1371,7 +1441,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('- Counted independent events, not articles?');
     L.push('- Each hypothesis has counter-searches and a tested other explanation?');
     L.push('- Verdict is the lowest one the evidence supports?');
-    L.push('- Positioning alignment section filled in, and if you read fewer than five releases or could not read the homepage, you said so?');
+    L.push('- "How the company fits the market" section filled in, and if you read fewer than five releases or could not read the homepage, you said so?');
     L.push('- Every commercial question stays inside what outside evidence can raise?');
     L.push('- Every claim has a URL and date, or is marked [UNVERIFIED]?');
     L.push('');
@@ -1621,7 +1691,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     company: $('company'), website: $('website'), market: $('market'), competitors: $('competitors'),
     customers: $('customers'), geography: $('geography'), hunch: $('hunch'),
     customRow: $('custom-row'), customMonths: $('custom-months'), sigList: $('sig-list'),
-    out: $('out'), stages: $('stages'), job: $('out-job'), needs: $('out-needs'), hunchField: $('hunch-field'), build: $('build'), sigSum: $('sig-sum'), scopeAll: $('scope-all'), meta: $('meta'), raw: $('raw'), fname: $('fname'), banner: $('banner'),
+    out: $('out'), stages: $('stages'), job: $('out-job'), hunchField: $('hunch-field'), build: $('build'), sigSum: $('sig-sum'), scopeAll: $('scope-all'), meta: $('meta'), raw: $('raw'), fname: $('fname'), banner: $('banner'),
     copy: $('copy'), download: $('download'), reset: $('reset'), sample: $('sample'), status: $('status'),
     companyErr: $('company-err'), websiteErr: $('website-err'), monthsErr: $('months-err')
   };
@@ -1668,7 +1738,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   /* ---------- state ---------- */
   function updateSigSummary() {
     var n = selectedSignals().length, t = GSD.SIGNAL_TYPES.length;
-    els.sigSum.textContent = n === t ? 'All seven' : 'Narrowed, ' + n + ' of ' + t;
+    els.sigSum.textContent = n === t ? 'All seven areas' : 'Narrowed, ' + n + ' of ' + t;
     els.scopeAll.hidden = n === t;
   }
   function selectedSignals() {
@@ -1720,7 +1790,6 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     els.raw.scrollTop = 0;
     els.fname.textContent = b.filename;
     els.job.textContent = mod.job;
-    els.needs.textContent = mod.needs;
     els.meta.textContent = b.text.split(/\s+/).filter(Boolean).length.toLocaleString('en-US') + ' words';
     els.copy.disabled = !valid; els.download.disabled = !valid;
     els.banner.hidden = valid;
@@ -1777,11 +1846,11 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     var name = briefs[active].filename, text = briefs[active].text;
     if (window.claude && window.claude.use) {
       window.claude.use('downloads').then(function (d) {
-        if (!d) { say('Download is unavailable here. Use Copy brief.'); return null; }
+        if (!d) { say('Download is unavailable here. Use Copy research prompt.'); return null; }
         return d.save({ filename: name, data: text }).then(function () { say('Saved ' + name); });
       }).catch(function (e) {
         if (e && e.code === 'declined') return;
-        say('Download did not finish. Use Copy brief.');
+        say('Download did not finish. Use Copy research prompt.');
       });
       return;
     }
@@ -1835,7 +1904,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     touched.company = touched.website = true; build(true);
     if (valid) {
       reveal();
-      say('Brief built. Copy it or download it.');
+      say('Research prompt built. Copy it or download it.');
       els.out.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
       (els.company.value.trim() ? els.website : els.company).focus();
@@ -1859,7 +1928,20 @@ document.querySelectorAll('[data-scroll]').forEach(function (l) {
 
 </script>
 <script>
-(function(){function h(){try{parent.postMessage({type:'gsd-height',height:document.documentElement.scrollHeight},'*')}catch(e){}}
+(function(){
+  var pairs=[['how-btn','how-panel'],['meth-btn','meth-panel']];
+  function set(bid,pid,open){var b=document.getElementById(bid),p=document.getElementById(pid);if(!b||!p)return;b.setAttribute('aria-expanded',open?'true':'false');p.hidden=!open;}
+  pairs.forEach(function(pr){
+    var b=document.getElementById(pr[0]);if(!b)return;
+    b.addEventListener('click',function(){
+      var open=b.getAttribute('aria-expanded')!=='true';
+      pairs.forEach(function(o){set(o[0],o[1],o===pr?open:false);});
+    });
+  });
+})();
+</script>
+<script>
+(function(){function h(){try{parent.postMessage({type:'gsd-height',height:Math.ceil(document.body.getBoundingClientRect().height)},'*')}catch(e){}}
 window.addEventListener('load',h);window.addEventListener('resize',h);
 if(window.ResizeObserver)new ResizeObserver(h).observe(document.body);setInterval(h,1500);})();
 </script>
