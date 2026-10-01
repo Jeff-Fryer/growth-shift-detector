@@ -16,6 +16,6 @@ Open `index.html` in a browser, or use the hosted version at https://www.jefffry
 
 ## License
 
-Free to use, copy, and adapt. Attribution appreciated.
+Free to use and share. © Jeff Fryer. Attribution appreciated.
 
 Built by [Jeff Fryer](https://www.jefffryer.com), The Fryer Group.
