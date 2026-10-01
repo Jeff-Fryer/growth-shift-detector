@@ -784,7 +784,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 
         <p id="banner" class="banner" hidden></p>
 
-        <p class="tabs-guide"><strong>Start with Scan.</strong> Use the other tools to test what you find, share it with your team, or track what happens next.</p>
+        <p class="tabs-guide"><strong>Start with Scan.</strong> Then Stress Test the finding in a fresh chat, and bring its result back to the Scan chat before the Executive Brief or Watchlist.</p>
         <div class="stages" id="stages" role="tablist" aria-label="Prompt type"></div>
         <p class="job" id="out-job"></p>
 
@@ -1137,7 +1137,19 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 
   var BOUNDARY = 'This analysis uses public evidence to identify and test potential changes in the company\'s commercial environment. It cannot see internal pipeline, margins, customer conversations, win/loss data, product constraints, resources, capabilities or growth objectives.\n\nDo not prescribe company strategy, positioning, resource allocation, organizational changes, campaigns, sales priorities or a GTM plan. Public evidence is insufficient for those decisions.\n\nWhere the analysis surfaces a material finding, identify the commercial question the evidence creates, not a recommended company strategy.\n\nThis is a diagnostic, not a growth plan. It does not answer whether to enter a market, how large the opportunity is for this company, whether it can win, which customers to prioritize, how to reposition, what to change in go-to-market, where to allocate resources, what to stop doing or how to execute.\n\nKeep two chains apart. Evidence \u2192 Interpretation \u2192 Commercial question is what this analysis does. Company decision \u2192 Strategy \u2192 Execution requires internal company context and is not part of it.';
 
-  var RESEARCH_MODE = 'Use your platform\'s deep research or equivalent extended web-research mode if available. This investigation is not designed for a quick web search.';
+  /* What prints in the finished Stress Test, Executive Brief and Watchlist.
+     The full BOUNDARY above stays in each prompt as model instructions only. */
+  var BOUNDARY_CLOSE = {
+    stress: 'It tests a claim, not a strategy.',
+    exec: 'It identifies a commercial question, not a recommended strategy.',
+    watch: 'It tracks public evidence, not a company action plan.'
+  };
+  function boundaryShort(c, kind) {
+    return 'This analysis uses public evidence and cannot see ' + c.company + '\'s internal pipeline, customer conversations, economics, capabilities, constraints or growth priorities. ' + BOUNDARY_CLOSE[kind];
+  }
+  var BOUNDARY_RULES_NOTE = 'The boundary rules below govern the whole analysis. Do not print them. They are not part of the output above.';
+
+  var RESEARCH_MODE ='Use your platform\'s deep research or equivalent extended web-research mode if available. This investigation is not designed for a quick web search.';
 
   /* Exec Brief and Watchlist: what they may draw on. Same-conversation work is
      fair to use; a pasted report allows targeted checks only, never invention. */
@@ -1147,6 +1159,10 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('**Same conversation.** If a Scan or Stress Test was run earlier in this conversation, use the research, evidence, counter-evidence and reasoning it established, not only the shortened report it displayed. The Scan shows only a preview of its work. The rest is fair to use here. Use only what is actually still available to you in this conversation. If the earlier work is no longer available, treat the report as pasted.');
     L.push('');
     L.push('**Pasted report only.** If you have only a pasted report, do not invent or reconstruct evidence it does not contain. Where a section of this ' + product + ' needs something the report does not show, you may run targeted checks: open the sources the report cites, or search narrowly for the specific evidence that section needs. Mark everything from those checks **[NEW CHECK]** with its source and date, so it is never presented as evidence from the original investigation. If a gap cannot be filled that way, write **[NOT IN REPORT]**.');
+    L.push('');
+    L.push('**Stress Test result.** If a Stress Test result is in this conversation, treat it as the challenge step applied to the Scan. ' + (product === 'watchlist'
+      ? 'Monitor the finding that survived the Stress Test, not an earlier Scan claim that the Stress Test corrected, narrowed or weakened.'
+      : 'Report the finding that survived the Stress Test, including any narrowing, correction, uncertainty or weakened claim. Do not carry an original Scan claim into this brief when the Stress Test has materially corrected or weakened it.'));
     L.push('');
     L.push('Either way, this is not a new Scan. Do not run open-ended research or look for new findings.');
     L.push('');
@@ -1485,6 +1501,15 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push(RESEARCH_MODE);
     L.push('');
+    L.push('## Before you run this');
+    L.push('');
+    L.push('1. Run the Scan first.');
+    L.push('2. Start a fresh AI conversation for this Stress Test, not the one where the Scan ran.');
+    L.push('3. Paste the completed Scan report where marked below. The visible report is enough. You do not need the Scan\'s hidden research or reasoning.');
+    L.push('4. If you paste a Scan report, the hunch to test can be the Scan\'s bold headline sentence.');
+    L.push('5. Run the Stress Test, then copy its completed result.');
+    L.push('6. Go back to the original Scan conversation and paste the Stress Test result there before you run the Executive Brief or Watchlist.');
+    L.push('');
     L.push('## The claim to test');
     L.push('');
     if (hunch) {
@@ -1492,13 +1517,13 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
       L.push('');
       L.push('> ' + hunch);
       L.push('');
-      L.push('Restate it as two to four specific claims that could each be true or false. Test each one. If an earlier report is also pasted below, test that too.');
+      L.push('Restate it as two to four specific claims that could each be true or false. Test each one. If the completed Scan report is also pasted below, test that too: its evidence, sources, counts and wording.');
     } else {
-      L.push('No hunch was entered. Paste a finding or a full Scan report below and test that.');
+      L.push('No hunch was entered. Paste the completed Scan report or a finding below and test that.');
     }
     L.push('');
     L.push('```');
-    L.push('[PASTE THE FINDING OR REPORT HERE, IF ANY]');
+    L.push('[PASTE THE COMPLETED SCAN REPORT OR FINDING HERE, IF ANY]');
     L.push('```');
     L.push('');
     L.push('Window: ' + fmtMonth(c.start) + ' to ' + fmtMonth(c.end) + '.');
@@ -1558,13 +1583,17 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('# A BETTER STORY   (if any)');
     L.push('# WHAT WOULD CHANGE THE CONCLUSION');
     L.push('# BOUNDARY OF THIS ANALYSIS');
-    L.push(BOUNDARY);
+    L.push(boundaryShort(c, 'stress'));
     L.push('# SOURCES');
     L.push('');
     L.push(WHAT_NEXT);
     L.push('```');
     L.push('');
     L.push(WHAT_NEXT_RULE);
+    L.push('');
+    L.push(BOUNDARY_RULES_NOTE);
+    L.push('');
+    L.push(BOUNDARY);
     L.push('');
     L.push('Verdict scale for the ruling:');
     L.push('');
@@ -1583,17 +1612,19 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('Turn a finished Growth Shift report into one page a CEO reads in three minutes: what changed, why it could matter, what supports it, what argues against it, and the question it creates. This is intelligence prepared for an executive. It does not make the decision for the executive.');
     L.push('');
     workFrom(L, 'brief');
-    L.push('Paste the report here if it is not already in this conversation:');
+    L.push('Paste the completed Scan report and, if one was run, the completed Stress Test result here if they are not already in this conversation:');
     L.push('');
     L.push('```');
-    L.push('[PASTE THE COMPLETED REPORT HERE]');
+    L.push('[PASTE THE COMPLETED SCAN REPORT HERE]');
+    L.push('');
+    L.push('[PASTE THE COMPLETED STRESS TEST RESULT HERE, IF ONE WAS RUN]');
     L.push('```');
     L.push('');
     L.push('## Rules');
     L.push('');
     L.push('- Use only the evidence described in "What to work from". Beyond targeted checks, do not conduct new research. If a factual claim must be verified to avoid repeating a possible error, that is a targeted check: mark it **[NEW CHECK]** and cite the source. Never use a check to introduce a new finding.');
     L.push('- Keep FACT, SIGNAL, INFERENCE and HYPOTHESIS separate.');
-    L.push('- Keep the verdict as written. Do not round up.');
+    L.push('- Keep the verdict as written, or as the Stress Test revised it. Do not round up.');
     L.push('- Do not recommend positioning, GTM strategy, budgets, organizational changes, campaigns, sales plans, ICP changes, 90-day plans or resource allocation.');
     L.push('- ' + STYLE);
     L.push('');
@@ -1613,12 +1644,16 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('## The commercial question this creates   (about the market or the decision leadership would face. Not about internal capacity or resources. Not a recommendation.)');
     L.push('## What would change our mind   (evidence that would strengthen it, and evidence that would kill it)');
     L.push('## Boundary of this analysis');
-    L.push(BOUNDARY);
+    L.push(boundaryShort(c, 'exec'));
     L.push('');
     L.push(WHAT_NEXT);
     L.push('```');
     L.push('');
     L.push(WHAT_NEXT_RULE);
+    L.push('');
+    L.push(BOUNDARY_RULES_NOTE);
+    L.push('');
+    L.push(BOUNDARY);
     L.push('');
     return L.join('\n');
   }
@@ -1633,10 +1668,12 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('Say what to watch over the **next 90 to 180 days** to learn whether a possible growth shift around ' + c.company + ' is strengthening, weakening or changing. Build a watchlist a busy person can maintain with free tools, using automated weekly alerts and no more than about 30 minutes of manual review each month.');
     L.push('');
     workFrom(L, 'watchlist');
-    L.push('Paste the finding or report here if it is not already in this conversation. If no shift was found, use the two or three earliest signals that would justify looking again.');
+    L.push('Paste the completed Scan report and, if one was run, the completed Stress Test result here if they are not already in this conversation. If no shift was found, use the two or three earliest signals that would justify looking again.');
     L.push('');
     L.push('```');
-    L.push('[PASTE THE FINDING OR REPORT HERE]');
+    L.push('[PASTE THE COMPLETED SCAN REPORT HERE]');
+    L.push('');
+    L.push('[PASTE THE COMPLETED STRESS TEST RESULT HERE, IF ONE WAS RUN]');
     L.push('```');
     L.push('');
     L.push('## Rules');
@@ -1670,11 +1707,15 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push('## Boundary of this analysis');
     L.push('');
-    L.push(BOUNDARY);
+    L.push(boundaryShort(c, 'watch'));
     L.push('');
     L.push(WHAT_NEXT);
     L.push('');
     L.push(WHAT_NEXT_RULE);
+    L.push('');
+    L.push(BOUNDARY_RULES_NOTE);
+    L.push('');
+    L.push(BOUNDARY);
     L.push('');
     return L.join('\n');
   }
