@@ -1089,7 +1089,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     'Semiconductor \u00b7 Deep Tech \u00b7 Hard Tech | Claude Certified'
   ].join('\n');
 
-  var WHAT_NEXT_RULE = 'End the report with the following section, reproduced verbatim. Format jefffryer.com as a Markdown link.';
+  var WHAT_NEXT_RULE = 'End your output with the "# WHAT COMES NEXT" section shown above. Copy it word for word, from that heading through the final "Claude Certified" line, keeping jefffryer.com as the Markdown link shown. Nothing comes after it.';
 
   var GRADES = [
     '| Grade | What it is | Examples |',
@@ -1129,13 +1129,28 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     '|---|---|',
     '| **Nothing has moved** | You searched properly. Signals are absent, isolated, repeated coverage of one event, or fully explained by something simpler. |',
     '| **Early signs** | One or two independent signals, or several sharing one root event, and no grade A commitment from an independent party. |',
-    '| **Something is moving** | At least three independent events from at least two kinds of party point the same way, including at least one grade A. At least one of those must name this company or its product and come from someone other than the company. A credible other explanation is still open. |',
+    '| **Something is moving** | At least three independent events from at least two kinds of party point the same way, including at least one grade A. A credible other explanation is still open. |',
     '| **Clear shift** | Independent events from three or more kinds of party line up, including repeat or multi-party grade A evidence, and the main other explanations were tested and do not fit. |'
   ].join('\n');
 
-  var VERDICT_NOTE = 'Ecosystem evidence (customers\' spending, rivals\' orders, industry shortages) shows a market is real. It never shows this company\'s share of it. For the company\'s own verdict, count only evidence that names the company or its product. If every such item comes from the company\'s own releases, the verdict cannot rise above Early signs. If you are between two verdicts, pick the lower one and say what would move it up. A verdict describes how strong the public evidence is. It is not a forecast. No percentages or scores. Explain confidence in words: how many independent events, which grades, which parties, what is missing.';
+  var VERDICT_NOTE = 'The verdict measures how strong the public evidence is that a meaningful external commercial or market change has occurred in this company\'s market. Keep two questions apart. (A) Is the external market or commercial environment changing? The verdict answers this one. Ecosystem evidence (customers\' spending, rivals\' orders, industry shortages) counts toward it in full, whether or not anyone names this company. (B) What does public evidence show about this company\'s exposure or response to that change? Ecosystem evidence shows a market is real. It never shows this company\'s share of it, and the company\'s own releases alone do not prove its exposure. Answer B in words, in the finding, the catch or the boundary. Do not lower the verdict only because no third party names the company, as is common for private companies. Do not confuse "we cannot publicly verify the company\'s exposure" with "the market shift is weak." If you are between two verdicts, pick the lower one and say what would move it up. A verdict describes how strong the public evidence is. It is not a forecast. No percentages or scores. Explain confidence in words: how many independent events, which grades, which parties, what is missing.';
 
   var BOUNDARY = 'This analysis uses public evidence to identify and test potential changes in the company\'s commercial environment. It cannot see internal pipeline, margins, customer conversations, win/loss data, product constraints, resources, capabilities or growth objectives.\n\nDo not prescribe company strategy, positioning, resource allocation, organizational changes, campaigns, sales priorities or a GTM plan. Public evidence is insufficient for those decisions.\n\nWhere the analysis surfaces a material finding, identify the commercial question the evidence creates, not a recommended company strategy.\n\nThis is a diagnostic, not a growth plan. It does not answer whether to enter a market, how large the opportunity is for this company, whether it can win, which customers to prioritize, how to reposition, what to change in go-to-market, where to allocate resources, what to stop doing or how to execute.\n\nKeep two chains apart. Evidence \u2192 Interpretation \u2192 Commercial question is what this analysis does. Company decision \u2192 Strategy \u2192 Execution requires internal company context and is not part of it.';
+
+  var RESEARCH_MODE = 'Use your platform\'s deep research or equivalent extended web-research mode if available. This investigation is not designed for a quick web search.';
+
+  /* Exec Brief and Watchlist: what they may draw on. Same-conversation work is
+     fair to use; a pasted report allows targeted checks only, never invention. */
+  function workFrom(L, product) {
+    L.push('## What to work from');
+    L.push('');
+    L.push('**Same conversation.** If a Scan or Stress Test was run earlier in this conversation, use the research, evidence, counter-evidence and reasoning it established, not only the shortened report it displayed. The Scan shows only a preview of its work. The rest is fair to use here. Use only what is actually still available to you in this conversation. If the earlier work is no longer available, treat the report as pasted.');
+    L.push('');
+    L.push('**Pasted report only.** If you have only a pasted report, do not invent or reconstruct evidence it does not contain. Where a section of this ' + product + ' needs something the report does not show, you may run targeted checks: open the sources the report cites, or search narrowly for the specific evidence that section needs. Mark everything from those checks **[NEW CHECK]** with its source and date, so it is never presented as evidence from the original investigation. If a gap cannot be filled that way, write **[NOT IN REPORT]**.');
+    L.push('');
+    L.push('Either way, this is not a new Scan. Do not run open-ended research or look for new findings.');
+    L.push('');
+  }
 
   var STYLE = 'Write in plain, short sentences. No em dashes. No padding. No scores with false precision.';
 
@@ -1232,6 +1247,8 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push('Use live web research. Look for evidence, connect it, then try to break your own conclusion. Two results are useful: a specific, well-supported shift the company may not have acted on, or a clear finding that nothing material changed. Inventing a story is the only failure.');
     L.push('');
+    L.push(RESEARCH_MODE);
+    L.push('');
     L.push('This is a lightweight outside-in diagnostic, not commercial due diligence. Do not try to be exhaustive. Spot something worth a second look, show enough evidence to make it credible, and ask the question it raises.');
     L.push('');
     L.push('Your job is to find, corroborate, challenge and surface. It is not to decide, prioritize, position, allocate or execute. For each finding, surface the question it creates for leadership, not a strategy.');
@@ -1272,15 +1289,20 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push('**Look for behavior across:** customers, competitors, suppliers, the ecosystem, investment, capacity, hiring, and the company itself. **Look for orders, deployments and repeat behavior, not merely announcements.**');
     L.push('');
-    L.push('**Required operation: how the company fits the market (positioning alignment).** Compare how the company presents itself with where the market and its buyers are actually moving. Do this in every Scan, even if you find no shift.');
-    L.push('');
-    L.push('1. Capture how the company presents itself today: the homepage headline and the markets and applications it names, in the order it names them.');
-    L.push('2. Read its five most recent substantive company releases. Skip event notices and personnel news.');
-    L.push('3. Compare what the company says it is and serves with what its newest activity suggests it is actually pursuing.');
-    L.push('4. If you could only retrieve some of the five releases, or not the homepage, say how many you read. Do not claim the comparison was complete. Report the result in a section headed "How the company fits the market" as **Aligned**, **Possibly ahead of the website story** or **Insufficient evidence**, with the evidence behind it.');
-    L.push('');
-    L.push('A difference is not an error. It may only mean recent activity is moving faster than the story on the website. Report the gap as something to investigate. Do not tell the company how to reposition.');
-    L.push('');
+    var positioning = c.signals.some(function (x) { return x.id === 'positioning'; });
+    if (positioning) {
+      L.push('**Required analysis: how the company fits the market (positioning alignment).** Compare how the company presents itself with where the market and its buyers are actually moving. Do this in every Scan that covers this lens, even if you find no shift. It is part of your analysis, not a section of the report.');
+      L.push('');
+      L.push('1. Capture how the company presents itself today: the homepage headline and the markets and applications it names, in the order it names them.');
+      L.push('2. Read its five most recent substantive company releases. Skip event notices and personnel news.');
+      L.push('3. Compare what the company says it is and serves with what its newest activity suggests it is actually pursuing.');
+      L.push('4. If you could only retrieve some of the five releases, or not the homepage, note how many you read. Do not treat the comparison as complete.');
+      L.push('');
+      L.push('A difference is not an error. It may only mean recent activity is moving faster than the story on the website. Treat a gap as something to investigate. Do not tell the company how to reposition.');
+      L.push('');
+      L.push('Bring this comparison into the report only where it materially contributes to the single strongest growth-shift finding, for example as one of the three signals or as part of the catch, with the evidence behind it. Otherwise keep it in your analysis and do not surface it. Never give it its own section or verdict.');
+      L.push('');
+    }
     L.push('**Search.** ' + (c.allSignals ? 'Cover everything below: investigate all seven listed areas.' : 'Cover only these dimensions: ' + c.signals.map(function (x) { return x.name; }).join(', ') + '.'));
     L.push('');
     L.push('- **Run some searches without the company name.** Search customers, applications, standards and rivals, only to check whether a company-specific signal also shows up in the market.');
@@ -1385,13 +1407,13 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push('Do not make the finding vague to hold it back. The reader should get one real insight. What you withhold is the supporting apparatus, not the insight.');
     L.push('');
-    L.push('Never surface: the evidence log, the signal map, additional findings, the full counter-case, the positioning analysis, the commercialization staging, rejected hypotheses, competing explanations in detail, proof or kill criteria, a monitoring plan, search strings or alerts, recommended strategy or recommended actions. The engine still performs whatever analysis it needs to choose and validate the preview.');
+    L.push('Never surface: the evidence log, the signal map, additional findings, the full counter-case, the positioning analysis (except where it materially contributes to the finding, as set out above), the commercialization staging, rejected hypotheses, competing explanations in detail, proof or kill criteria, a monitoring plan, search strings or alerts, recommended strategy or recommended actions. The engine still performs whatever analysis it needs to choose and validate the preview.');
     L.push('');
     L.push('If nothing credible survives the research, say so plainly. Never manufacture a shift to produce an interesting result.');
     L.push('');
     L.push('## Report format');
     L.push('');
-    L.push('Use these headings exactly. Nothing else.');
+    L.push('The block below is a template. Print the lines that start with # as headings, exactly as written and in this order, and print the Company, Window and Run lines as shown. The other lines under each heading tell you what to write there. Do not print them. Add no other sections. The # WHAT COMES NEXT section at the end is fixed text: see the rule after the template.');
     L.push('');
     L.push('```');
     L.push('# GROWTH SHIFT DETECTOR');
@@ -1430,7 +1452,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push(WHAT_NEXT_RULE);
     L.push('');
-    L.push('The boundary below governs the whole analysis even though it is not printed as a section.');
+    L.push('The boundary rules below govern the whole analysis. Do not print them. They are not part of the closing section above.');
     L.push('');
     L.push(BOUNDARY);
     L.push('');
@@ -1441,7 +1463,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('- Counted independent events, not articles?');
     L.push('- Each hypothesis has counter-searches and a tested other explanation?');
     L.push('- Verdict is the lowest one the evidence supports?');
-    L.push('- "How the company fits the market" section filled in, and if you read fewer than five releases or could not read the homepage, you said so?');
+    if (positioning) L.push('- Positioning comparison done, with how many releases you read noted, and surfaced only if it materially contributes to the strongest finding?');
     L.push('- Every commercial question stays inside what outside evidence can raise?');
     L.push('- Every claim has a URL and date, or is marked [UNVERIFIED]?');
     L.push('');
@@ -1460,6 +1482,8 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('**Do not prove the hunch. Try to break it.**');
     L.push('');
     L.push('You are the hostile reviewer. Test the claim below about ' + c.company + '. Do not try to balance the claim. Your job is to find the strongest credible case against it. Be rigorous, skeptical and evidence-led. Find out whether it survives contact with the evidence. Use live web research, in a **fresh chat**. Do not trust an earlier analysis\'s sources or counts. Open them yourself.');
+    L.push('');
+    L.push(RESEARCH_MODE);
     L.push('');
     L.push('## The claim to test');
     L.push('');
@@ -1518,6 +1542,8 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push('## Output');
     L.push('');
+    L.push('The block below is a template. Print each # heading in this order, without the notes in parentheses. For RULING, print one of the four rulings. Under # BOUNDARY OF THIS ANALYSIS, print the boundary text shown, word for word. End with the # WHAT COMES NEXT section, as the rule after the template says.');
+    L.push('');
     L.push('```');
     L.push('# STRESS TEST RESULT');
     L.push('# RULING   HOLDS / HOLDS, BUT WEAKER / DOES NOT HOLD / CANNOT BE TESTED');
@@ -1556,7 +1582,8 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push('Turn a finished Growth Shift report into one page a CEO reads in three minutes: what changed, why it could matter, what supports it, what argues against it, and the question it creates. This is intelligence prepared for an executive. It does not make the decision for the executive.');
     L.push('');
-    L.push('If you just ran the Scan in this chat, use it. Otherwise paste the report:');
+    workFrom(L, 'brief');
+    L.push('Paste the report here if it is not already in this conversation:');
     L.push('');
     L.push('```');
     L.push('[PASTE THE COMPLETED REPORT HERE]');
@@ -1564,13 +1591,15 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push('## Rules');
     L.push('');
-    L.push('- Use only evidence from the completed report. Do not conduct new research. If a factual claim must be verified to avoid repeating a possible error, mark that verification **[NEW CHECK]** and cite the source. Do not use the new check to introduce a new finding.');
+    L.push('- Use only the evidence described in "What to work from". Beyond targeted checks, do not conduct new research. If a factual claim must be verified to avoid repeating a possible error, that is a targeted check: mark it **[NEW CHECK]** and cite the source. Never use a check to introduce a new finding.');
     L.push('- Keep FACT, SIGNAL, INFERENCE and HYPOTHESIS separate.');
     L.push('- Keep the verdict as written. Do not round up.');
     L.push('- Do not recommend positioning, GTM strategy, budgets, organizational changes, campaigns, sales plans, ICP changes, 90-day plans or resource allocation.');
     L.push('- ' + STYLE);
     L.push('');
-    L.push('## Return only these sections (one screen, about 400 words, then the table)');
+    L.push('## Return only these sections (one screen, about 400 words)');
+    L.push('');
+    L.push('The block below is a template. Print each heading as shown, without the notes in parentheses. Under ## Boundary of this analysis, print the boundary text shown, word for word. End with the # WHAT COMES NEXT section, as the rule after the template says.');
     L.push('');
     L.push('```');
     L.push('# EXECUTIVE BRIEF: ' + c.company);
@@ -1603,7 +1632,8 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('');
     L.push('Say what to watch over the **next 90 to 180 days** to learn whether a possible growth shift around ' + c.company + ' is strengthening, weakening or changing. Build a watchlist a busy person can maintain with free tools, using automated weekly alerts and no more than about 30 minutes of manual review each month.');
     L.push('');
-    L.push('Paste the finding or report. If no shift was found, use the two or three earliest signals that would justify looking again.');
+    workFrom(L, 'watchlist');
+    L.push('Paste the finding or report here if it is not already in this conversation. If no shift was found, use the two or three earliest signals that would justify looking again.');
     L.push('');
     L.push('```');
     L.push('[PASTE THE FINDING OR REPORT HERE]');
@@ -1636,6 +1666,8 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     L.push('- **Set up first.** The exact alerts, saved searches and feeds.');
     L.push('- **Run the Scan again on** a date, with a ' + c.months + '-month window moved forward.');
     L.push('');
+    L.push('Then print the section below: the heading "## Boundary of this analysis" and the boundary text under it, word for word. End with the # WHAT COMES NEXT section, as the last rule says.');
+    L.push('');
     L.push('## Boundary of this analysis');
     L.push('');
     L.push(BOUNDARY);
@@ -1661,7 +1693,7 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
       case 'watch': body = buildWatch(c); break;
       default: body = buildFull(c);
     }
-    return body + '\n---\n\nGrowth Shift Detector by Jeff Fryer, The Fryer Group. Free to use, copy and adapt.\n';
+    return body + '\n---\n\nGrowth Shift Detector by Jeff Fryer, The Fryer Group. Free to use and share. \u00a9 Jeff Fryer.\n';
   }
 
   root.GSD = {
