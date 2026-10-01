@@ -497,8 +497,6 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 .ex-final.wait .example-row + .example-row { transition-delay: 0s; }
 .ex-final .example-row + .example-row { transition-delay: .7s; }
 
-.ex-replay { margin-top: 18px; color: var(--text-3); border-bottom-color: var(--line); transition: opacity .6s; }
-.ex-replay:hover { color: var(--text-2); border-bottom-color: var(--text-3); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* ------------------------------------------------------------
@@ -784,7 +782,6 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
           </div>
         </div>
       </div>
-      <button type="button" class="link-btn ex-replay" id="ex-replay" hidden>Replay example</button>
     </div>
   </section>
 
@@ -824,9 +821,9 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
 
 <script>
 /* How a scan takes shape. Plays once when the example scrolls into view,
-   then holds the finished state. Standalone: reads and touches nothing in
-   the builder. Without script, or with reduced motion, the finished state
-   is simply shown. */
+   then holds the finished state for good. Standalone: reads and touches
+   nothing in the builder. Without script, or with reduced motion, the
+   finished state is simply shown. */
 (function () {
   var sec = document.getElementById('ex');
   if (!sec || !window.IntersectionObserver || !window.matchMedia) return;
@@ -836,19 +833,15 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
   var p1 = document.getElementById('ex-p1'), p2 = document.getElementById('ex-p2');
   var count = document.getElementById('ex-count'), srcs = document.getElementById('ex-srcs');
   var notes = p2.querySelectorAll('.ex-notes p');
-  var fin = document.getElementById('ex-final'), replay = document.getElementById('ex-replay');
-  var timers = [];
+  var fin = document.getElementById('ex-final');
 
   function step(n) { for (var i = 0; i < steps.length; i++) steps[i].classList.toggle('on', i === n); }
   function note(n) { notes[n].classList.remove('wait'); }
-  function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+  function at(ms, fn) { setTimeout(fn, ms); }
 
+  /* Hold the lead-up state until the example is in view. */
   function arm() {
-    timers.forEach(clearTimeout); timers = [];
     step(-1);
-    p1.classList.remove('on'); p2.classList.remove('on');
-    count.classList.remove('merged'); srcs.classList.remove('traced', 'merged');
-    for (var i = 0; i < notes.length; i++) notes[i].classList.add('wait');
     fin.classList.add('wait');
   }
 
@@ -859,23 +852,17 @@ textarea#hunch { resize: vertical; line-height: 1.55; }
     at(5600,  function () { srcs.classList.add('merged'); count.classList.add('merged'); note(1); });
     at(7000,  function () { note(2); });
     at(9000,  function () { p2.classList.remove('on'); step(2); fin.classList.remove('wait'); });
-    at(10600, function () { for (var i = 0; i < steps.length; i++) steps[i].classList.add('on'); replay.hidden = false; });
+    at(10600, function () { for (var i = 0; i < steps.length; i++) steps[i].classList.add('on'); });
   }
 
   sec.classList.add('ex-live');
   arm();
-  replay.hidden = true;
   var io = new IntersectionObserver(function (es) {
     if (!es[0].isIntersecting) return;
     io.disconnect();
     play();
   }, { threshold: 0.4 });
   io.observe(sec);
-
-  replay.addEventListener('click', function () {
-    arm();
-    setTimeout(play, 400);
-  });
 })();
 </script>
 
