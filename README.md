@@ -7,6 +7,7 @@ Free. No email, card, monthly plan, or trial.
 ## What's here
 
 - `index.html` is the whole tool. One file, no dependencies, no tracking. It runs entirely in your browser.
+- `index.html` on `main` is the production file. Deploy from it, and commit any change here before or right after deploying, so this repo always matches what is live.
 - `og-image.png` is the social preview image (1200 x 627).
 
 ## Use it
